@@ -9,7 +9,7 @@
 			</div>
 		</div>
 		<div class="main_head-right">
-			<div class="main_head-right-name">
+			<div class="main_head-right-name" @click="$router.push('/setting')">
 				设置
 			</div>
 			<el-popover placement="top-start" width="50" trigger="hover">
@@ -57,7 +57,7 @@
 <style scoped>
 	.main_head {
 		width: 100%;
-		height: 4rem;
+		height: 60px;
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;

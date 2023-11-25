@@ -1,91 +1,78 @@
 <template>
 	<div class="swiper">
-		<div class="setting-content">
-			<div class="setting-content-line">
-				<div class="setting-content-line-name">
-					用户协议
-				</div>
-				<div class="setting-content-line-right">
-					<div class="setting-content-line-right-button" @click="edit_UserAgreement=true">
-						编辑
-					</div>
-				</div>
+		<div class="swiper-top">
+			<div class="swiper-top-item" v-for="(item,index) in router">
+				{{item.name}}
 			</div>
-			<div class="setting-content-line">
-				<div class="setting-content-line-name">
-					底部信息
+		</div>
+		<div class="swiper-bottom">
+			<div class="swiper-top-item-top">
+				<el-select v-model="ClassificationName" placeholder="全部运营指标" style="width: 150px;"
+					@change="Change_Inspiration_Product_Classification">
+					<el-option v-for="item in ClassificationData" :key="item.id" :label="item.name" :value="item.id">
+					</el-option>
+				</el-select>
+				<el-button type="success" plain @click="initdata(),edit_aim=true" size="mini">新增指标</el-button>
+			</div>
+			<div class="swiper-bottom-bottom">
+				<div class="swiper-bottom-bottom-top">
+					<el-table :data="info" stripe style="width: 100%;overflow-y: scroll;">
+						<el-table-column prop="id" label="ID" width="100"></el-table-column>
+						<el-table-column prop="classification_name" label="分类"></el-table-column>
+						<el-table-column prop="name" label="名称"></el-table-column>
+						<el-table-column prop="tips" label="说明"></el-table-column>
+						<el-table-column prop="state_name" label="状态" width="100"></el-table-column>
+						<el-table-column prop="create_time" label="创建时间"></el-table-column>
+						<el-table-column label="操作" width="180">
+							<template slot-scope="scope">
+								<el-button @click="todeletegoods(scope.row)" type="text" size="small">删除</el-button>
+								
+								
+								<el-button @click="toupgoods(2,scope.row)" type="text" size="small" v-if="scope.row.status==1">下架</el-button>
+								<el-button @click="toupgoods(1,scope.row)" type="text" size="small" v-if="scope.row.status==2">上架</el-button>
+								<el-button type="text" size="small" @click="aimitem=scope.row,getdata(),edit_aim=true">编辑</el-button>
+							</template>
+						</el-table-column>
+					</el-table>
 				</div>
-				<div class="setting-content-line-right">
-					<div class="setting-content-line-right-button" @click="wechat = info.wechat,edit_bottom=true">
-						编辑
-					</div>
+				<div class="swiper-bottom-bottom-bottom">
+					<el-pagination @current-change="nextpage" background layout="prev, pager, next" :page-size="perPage"
+						:current-page="page" :total="total">
+					</el-pagination>
 				</div>
 			</div>
 		</div>
 
-		<el-dialog :title="'编辑用户协议'" :visible.sync="edit_UserAgreement" :close-on-click-modal="false">
+		<el-dialog :title="aimitem?'编辑运营指标':'新增运营指标'" :visible.sync="edit_aim" :close-on-click-modal="false">
 			<div class="content-special_show">
-					<div style="width: 100%;">
-						<vue-ueditor-wrap ref="tips" v-model="UserAgreement" :config="editorConfig"
-							:destroy="true" />
+				<div class="content-special_show-top">
+					<div class="content-special_show-top-line">
+						<div class="content-special_show-top-line-name">
+							分类
+						</div>
+						<el-select v-model="Classification_id" placeholder="请选择运营指标" style="width: 250px;">
+							<el-option v-for="item in ClassificationData" :key="item.id" :label="item.name"
+								:value="item.id">
+							</el-option>
+						</el-select>
 					</div>
-				<div class="content-popup-button">
-					<el-button size="mini" type="primary" @click="tosaveUserAgreement">确认编辑</el-button>
-				</div>
-			</div>
-		</el-dialog>
-		
-		<el-dialog :title="'编辑底部信息'" :visible.sync="edit_bottom" :close-on-click-modal="false" @close="getswiperdata()">
-			<div class="content-special_show">
-				<div class="content-special_show-line">
-					<div class="content-special_show-line-name">
-						tel
+					<div class="content-special_show-top-line">
+						<div class="content-special_show-top-line-name">
+							名称
+						</div>
+						<el-input v-model="name" placeholder="请输入名称"
+							class="content-special_show-top-line-right"></el-input>
 					</div>
-					<input v-model="info.tel" type="text" placeholder="请输入tel"
-						class="content-special_show-all-item-left-input"></input>
-				</div>
-				<div class="content-special_show-line">
-					<div class="content-special_show-line-name">
-						fax
+					<div class="content-special_show-top-line">
+						<div class="content-special_show-top-line-name">
+							提示
+						</div>
+						<el-input v-model="tips" placeholder="请输入提示"
+							class="content-special_show-top-line-right"></el-input>
 					</div>
-					<input v-model="info.fax" type="text" placeholder="请输入fax"
-						class="content-special_show-all-item-left-input"></input>
-				</div>
-				<div class="content-special_show-line">
-					<div class="content-special_show-line-name">
-						email
-					</div>
-					<input v-model="info.email" type="text" placeholder="请输入email"
-						class="content-special_show-all-item-left-input"></input>
-				</div>
-				<div class="content-special_show-line">
-					<div class="content-special_show-line-name">
-						time
-					</div>
-					<input v-model="info.time" type="text" placeholder="请输入time"
-						class="content-special_show-all-item-left-input"></input>
-				</div>
-				<div class="content-special_show-line">
-					<div class="content-special_show-line-name">
-						remark
-					</div>
-					<input v-model="info.remark" type="text" placeholder="请输入remark"
-						class="content-special_show-all-item-left-input"></input>
-				</div>
-				<div class="content-special_show-line">
-					<div class="content-special_show-line-name">
-						wechat
-					</div>
-					<label for="file-uploads">
-						<img style="width: 50px;height: 50px;"
-							:src="wechat?wechat:'https://img1.baidu.com/it/u=886800233,2359956977&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500'">
-					</label>
-					</el-button>
-					<input id="file-uploads" type="file" title="" :multiple="false" ref="myfile" accept="image/*"
-						@change="handleFileChange" />
 				</div>
 				<div class="content-popup-button">
-					<el-button size="mini" type="primary" @click="tosavebottom">确认编辑</el-button>
+					<el-button size="mini" type="success" @click="toeditgoods">确认操作</el-button>
 				</div>
 			</div>
 		</el-dialog>
@@ -100,26 +87,22 @@
 		},
 		data() {
 			return {
-				info:'',
-				UserAgreement:'',
-				edit_UserAgreement:false,
-				base64Image:'',
-				wechat:'',
-				edit_bottom:false,
-				
-				editorConfig: {
-					autoHeightEnabled: true, // 自动变高
-					autoFloatEnabled: true,
-					initialContent: "请输入内容",
-					autoClearinitialContent: true,
-					initialFrameWidth: "100%", // 初始化宽
-					initialFrameHeight: 500, // 初始化高
-					// BaseUrl: "",
-					// 上传文件接口（这个地址是我为了方便各位体验文件上传功能搭建的临时接口） - 修改成自己地址
-					serverUrl: "",
-					// UEditor 资源文件的存放路径
-					UEDITOR_HOME_URL: "/UEditor/", // 重要重要重要重要重要重要重要重要重要 必须配置好径!!!
-				},
+				router: [{
+					name: '运营指标',
+					links: ''
+				}, ],
+				info: [],
+				ClassificationName: '',
+				ClassificationData: [],
+				page: 1,
+				total: 0,
+				edit_aim: false,
+				aimitem: '',
+				perPage:12,
+				Classification_id: '',
+				name: '',
+				tips: '',
+
 			}
 		},
 		watch: {
@@ -132,8 +115,25 @@
 			var that = this
 			that.routepath = that.$route.path
 			that.getswiperdata()
+			that.getGGClassification()
 		},
 		methods: {
+			getdata(){
+				var that = this
+				that.Classification_id = that.aimitem.classification_id
+				that.name =that.aimitem.name
+				that.tips = that.aimitem.tips
+			},
+			Change_Inspiration_Product_Classification(e) {
+				var that = this
+				that.page = 1
+				that.getswiperdata()
+			},
+			nextpage(e) {
+				var that = this
+				that.page = e
+				that.getswiperdata()
+			},
 			handleFileChange(e) {
 				var that = this
 				var files = Array.prototype.slice.call(e.target.files)
@@ -147,72 +147,121 @@
 					};
 				});
 			},
-			tosavebottomend(){
-				var that = this
-				that.$api.post('/OpSetting', {
-					optype: 6,
-					tel:that.info.tel,
-					fax:that.info.fax,
-					email:that.info.email,
-					time:that.info.time,
-					remark:that.info.remark,
-					wechat:that.wechat
-				}).then(res => {
-					that.edit_bottom = false
-					that.$notify({
-						title: '成功',
-						message: res.msg,
-						type: 'success'
-					});
-					that.getswiperdata()
-				}).catch(error => {
-					console.error(error)
-				})
-			},
-			tosavebottom(){
-				var that = this
-				if(that.base64Image){
-					that.$api.post('/GetUploadPic',{
-						base64Image:that.wechat
-					}).then(res => {
-						that.wechat = res.data
-						console.log(res)
-						that.tosavebottomend()
-					}).catch(error => {
-						console.error(error)
-					})
-				}else{
-					that.tosavebottomend()
-				}
-			},
-			tosaveUserAgreement(){
-				var that = this
-				that.$api.post('/OpSetting', {
-					optype: 5,
-					UserAgreement: that.UserAgreement,
-				}).then(res => {
-					that.edit_UserAgreement = false
-					that.$notify({
-						title: '成功',
-						message: res.msg,
-						type: 'success'
-					});
-					that.getswiperdata()
-				}).catch(error => {
-					console.error(error)
-				})
-			},
-			getswiperdata() {
+			getGGClassification() {
 				var that = this
 				that.wechat = ''
 				that.base64Image = ''
-				that.$api.post('/OpSetting', {
+				that.$api.post('/GGClassification').then(res => {
+					that.ClassificationData = res.data
+					console.log(res, 555)
+				}).catch(error => {
+					console.error(error)
+				})
+			},
+			todeletegoods(es) {
+				var that = this
+				that.$api.post('/GGAddClassification', {
+					optype:2,
+					delete:1,
+					id: es.id
+				}).then(res => {
+					if (res.code == 200) {
+						that.$notify({
+							title: '成功',
+							message: '删除成功',
+							type: 'success'
+						});
+						that.edit_aim = false
+						that.initdata()
+					}
+					console.log(res, 555)
+				}).catch(error => {
+					console.error(error)
+				})
+			},
+			toupgoods(e,es) {
+				var that = this
+				that.$api.post('/GGAddClassification', {
+					optype:2,
+					delete:0,
+					id: es.id,
+					status:e
+				}).then(res => {
+					if (res.code == 200) {
+						that.$notify({
+							title: '成功',
+							message: '操作成功',
+							type: 'success'
+						});
+						that.edit_aim = false
+						that.initdata()
+					}
+					console.log(res, 555)
+				}).catch(error => {
+					console.error(error)
+				})
+			},
+			toeditgoods() {
+				var that = this
+				if (that.name == '') {
+					this.$notify({
+						title: '缺少参数',
+						message: '请输入名称',
+						position: 'bottom-right',
+						type: 'error'
+					});
+					return
+				}
+				if (that.Classification_id == '') {
+					this.$notify({
+						title: '缺少参数',
+						message: '请选择分类',
+						position: 'bottom-right',
+						type: 'error'
+					});
+					return
+				}
+				that.$api.post('/GGAddClassification', {
+					optype:1,
+					id:that.aimitem.id,
+					name: that.name,
+					tips: that.tips,
+					classification_id: that.Classification_id
+				}).then(res => {
+					if (res.code == 200) {
+						that.$notify({
+							title: '成功',
+							message: '新增成功',
+							type: 'success'
+						});
+						that.edit_aim = false
+						that.initdata()
+						that.page = 1
+						that.getswiperdata()
+					}
+					console.log(res, 555)
+				}).catch(error => {
+					console.error(error)
+				})
+			},
+			initdata() {
+				var that = this
+				that.name = ''
+				that.tips = ''
+				that.Classification_id = ''
+				that.aimitem = ''
+			},
+			getswiperdata() {
+				var that = this
+				that.$api.post('/GGClassificationList', {
 					optype: 1,
 					page: that.page,
+					perPage:that.perPage,
+					ClassificationName: that.ClassificationName
 				}).then(res => {
 					that.info = res.data
+					that.total = res.count
 					console.log(res, 555)
-					that.UserAgreement = res.data.UserAgreement
 				}).catch(error => {
 					console.error(error)
 				})
@@ -227,70 +276,92 @@
 		height: 100%;
 		display: flex;
 		flex-direction: column;
+		padding: 0 2rem;
+		justify-content: space-between;
 	}
-	.setting-content{
+
+	.swiper-top {
 		width: 100%;
+		height: 60px;
 		display: flex;
 		flex-direction: row;
-		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
 	}
-	.setting-content-line{
-		width: calc((100% / 6) - 32px);
+
+	.swiper-bottom {
+		width: 100%;
+		height: calc(100% - 60px);
 		display: flex;
 		flex-direction: column;
-		padding: 32px 0;
-		align-items: center;
-		justify-content: center;
-		background-color: #FFFFFF;
-		border-radius: 8px;
-		margin-right: 32px;
+		justify-content: space-between;
 	}
-	.setting-content-line-name{
-		font-size: 32px;
-		font-weight: bold;
-	}
-	.setting-content-line-right{
+
+	.swiper-top-item-top {
 		width: 100%;
+		height: 60px;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.swiper-bottom-bottom {
+		width: 100%;
+		height: calc(100% - 60px);
 		display: flex;
 		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		margin-top: 32px;
-		color: gray;
+		justify-content: space-between;
 	}
-	.setting-content-line-right-button{
-		cursor: pointer;
-	}
-	
-	.content-popup-button{
+
+	.swiper-bottom-bottom-top {
 		width: 100%;
+		height: calc(100% - 60px);
+		display: flex;
+		flex-direction: column;
+		overflow-y: scroll;
+	}
+
+	.swiper-bottom-bottom-bottom {
+		width: 100%;
+		height: 60px;
 		display: flex;
 		flex-direction: row;
 		align-items: center;
 		justify-content: flex-end;
-		padding: 16px 0;
 	}
-	.content-special_show-all-item-left-input {
-		width: calc(100% - 10rem);
-		background-color: #F9F9F9;
-		padding: 1rem 0.7rem;
-		border-radius: 0.3rem;
+
+	.content-special_show-top {
+		width: 100%;
 		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 0.9rem;
-		text-align: center;
+		flex-direction: column;
 	}
-	.content-special_show-line{
+
+	.content-special_show-top-line {
 		width: 100%;
 		display: flex;
 		flex-direction: row;
 		align-items: center;
 		justify-content: space-between;
-		margin-bottom: 16px;
+		border-bottom: 1px solid #F9F9F9;
+		padding: 1rem 0;
 	}
-	.content-special_show-line-name{
-		font-size: 16px;
-		width: 10rem;
+
+	.content-special_show-top-line-name {
+		width: 80px;
+		text-align: center;
+	}
+
+	.content-special_show-top-line-right {
+		width: calc(100% - 80px - 1rem);
+	}
+
+	.content-popup-button {
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: flex-end;
+		padding-top: 1rem;
 	}
 </style>

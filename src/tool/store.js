@@ -7,7 +7,7 @@ const dataPersistence = new VuexPersistence({
 })
 const store = new Vuex.Store({
 	state: {
-		base_url:'http://139.224.73.124:11082/api/web',
+		base_url:'https://api.suhejishi.com/api/GG',
 		userinfo: null,
 	},
 	mutations: {

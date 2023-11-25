@@ -23,7 +23,7 @@ const routes = [
 			{
 				path: '/setting',
 				name: '设置',
-				component: login
+				component: setting
 			}
 		]
 	},
