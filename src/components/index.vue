@@ -1,8 +1,8 @@
 <template>
 	<div class="content">
-		<web_left class="content-left"></web_left>
-		<div class="content-right">
-			<main_head></main_head>
+		<main_head></main_head>
+		<!-- <div class="content-right">
+		
 			<div class="content-right-view">
 				<router-view ></router-view>
 				
@@ -10,7 +10,7 @@
 
 				</div>
 			</div>
-		</div>
+		</div> -->
 	</div>
 </template>
 

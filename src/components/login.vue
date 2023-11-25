@@ -22,7 +22,7 @@
 					class="login-content-middle-line-input">
 			</div>
 			<div class="login-content-middle-button">
-				<el-button class="login-content-middle-button-name" type="primary" :loading="loading"  @click="tologin">
+				<el-button class="login-content-middle-button-name" type="primary" :loading="loading" @click="tologin">
 					立即登录</el-button>
 			</div>
 		</div>
@@ -35,12 +35,13 @@
 </template>
 
 <script>
+	import axios from 'axios';
 	export default {
 		data() {
 			return {
 				username: '',
 				password: '',
-				loading:false
+				loading: false
 			};
 		},
 		created() {
@@ -52,7 +53,7 @@
 		methods: {
 			tologin() {
 				var that = this
-				if(that.loading){
+				if (that.loading) {
 					return
 				}
 				if (that.username == '') {
@@ -62,7 +63,6 @@
 						position: 'bottom-right',
 						type: 'error'
 					});
-					this.$refs.checkcode.makeCode()
 					return
 				}
 				if (that.password == '') {
@@ -72,41 +72,33 @@
 						position: 'bottom-right',
 						type: 'error'
 					});
-					this.$refs.checkcode.makeCode()
 					return
 				}
 				that.loading = true
-				// var password = that.$aes.encrypt(that.password)
 				var password = that.password
-				that.$api.post('/GetWebLogin', {
-					username: that.username,
-					password: password
-				}).then(res => {
+				axios.get(
+					'https://control.gugesport.com/api/keji/gguser/marketUserInfo?phone='+that.username+'&password='+password
+					).then(res => {
+						console.log(res)
+					this.$notify({
+						title: '登录成功',
+						message: res.msg,
+						position: 'bottom-right',
+						type: 'success'
+					});
+					that.$store.commit('setUserInfo',res.data.data)
+					that.$router.push('/')
+				}).catch(res=>{
 					console.log(res)
+					this.$notify({
+						title: '登录失败',
+						message: res.data,
+						position: 'bottom-right',
+						type: 'error'
+					});
+					that.username = ''
+					that.password = ''
 					that.loading = false
-
-					if (res.code == 404) {
-						this.$notify({
-							title: '登录失败',
-							message: res.data,
-							position: 'bottom-right',
-							type: 'error'
-						});
-						that.username = ''
-						that.password = ''
-					}
-					if(res.code == 200) {
-						this.$notify({
-							title: '登录成功',
-							message: res.msg,
-							position: 'bottom-right',
-							type: 'success'
-						});
-						that.$store.commit('setUserInfo',res.data)
-						that.$router.push('/')
-					}
-				}).catch(error => {
-					console.error(error)
 				})
 			}
 		}
@@ -114,30 +106,34 @@
 </script>
 
 <style scoped>
-	.login-content{
+	.login-content {
 		width: 100vw;
 		height: 100vh;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 	}
-	.login-content-top{
+
+	.login-content-top {
 		width: 100%;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		padding-top: 50px;
 	}
-	.login-content-top-name{
+
+	.login-content-top-name {
 		font-size: 20px;
 		margin: 24px 0;
 	}
-	.login-content-top-pic{
+
+	.login-content-top-pic {
 		width: 64px;
 		height: 64px;
 		border-radius: 100%;
 	}
-	.login-content-middle{
+
+	.login-content-middle {
 		width: 350px;
 		border: 1px solid #ededed;
 		background-color: #f6f8fa;
@@ -148,21 +144,25 @@
 		justify-content: center;
 		border-radius: 5px;
 	}
-	.login-content-middle-line{
+
+	.login-content-middle-line {
 		width: 100%;
 		display: flex;
 		flex-direction: column;
 	}
-	.login-content-middle-line-name{
+
+	.login-content-middle-line-name {
 		font-size: 18px;
 		color: #5f5f5f;
 	}
-	.login-content-middle-button{
+
+	.login-content-middle-button {
 		width: 100%;
 		display: flex;
 		margin-top: 20px;
 	}
-	.login-content-middle-button-name{
+
+	.login-content-middle-button-name {
 		width: 100%;
 		height: 45px;
 		background-color: #00aa00;
@@ -174,6 +174,7 @@
 		font-size: 16px;
 		border-radius: 5px;
 	}
+
 	.login-content-middle-line-input {
 		width: 100%;
 		border: 1.5px solid #ededed;
@@ -183,9 +184,10 @@
 		outline: none;
 		font-size: 16px;
 		box-sizing: border-box;
-		padding:16px 16px;
+		padding: 16px 16px;
 	}
-	.login-content-bottom{
+
+	.login-content-bottom {
 		width: 350px;
 		display: flex;
 		flex-direction: row;
@@ -193,16 +195,19 @@
 		justify-content: center;
 		margin-top: 16px;
 	}
-	.login-content-bottom-name{
+
+	.login-content-bottom-name {
 		margin-right: 16px;
 		color: gray;
 		font-size: 16px;
 		cursor: pointer;
 	}
+
 	input {
 		border: none;
 	}
-	.el-button{
+
+	.el-button {
 		border: none;
 	}
 </style>
