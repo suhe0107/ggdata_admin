@@ -76,29 +76,34 @@
 				}
 				that.loading = true
 				var password = that.password
-				axios.get(
-					'https://control.gugesport.com/api/keji/gguser/marketUserInfo?phone='+that.username+'&password='+password
-					).then(res => {
-						console.log(res)
+				var that = this
+				that.$api.post('/KJGGLogin',{
+					username:that.username,
+					password:password
+				}).then(res => {
+					if(res.code==404){
+						this.$notify({
+							title: '登录失败',
+							message: res.data,
+							position: 'bottom-right',
+							type: 'error'
+						});
+						that.username = ''
+						that.password = ''
+						that.loading = false
+						return
+					}
 					this.$notify({
 						title: '登录成功',
 						message: res.msg,
 						position: 'bottom-right',
 						type: 'success'
 					});
-					that.$store.commit('setUserInfo',res.data.data)
+					that.$store.commit('setUserInfo',res.data)
 					that.$router.push('/')
-				}).catch(res=>{
-					console.log(res)
-					this.$notify({
-						title: '登录失败',
-						message: res.data,
-						position: 'bottom-right',
-						type: 'error'
-					});
-					that.username = ''
-					that.password = ''
-					that.loading = false
+					
+				}).catch(error => {
+					console.error(error)
 				})
 			}
 		}

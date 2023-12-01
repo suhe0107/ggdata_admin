@@ -106,6 +106,7 @@
 		display: flex;
 		flex-direction: column;
 		padding: 2rem;
+		padding-bottom: 3rem;
 	}
 	.content-bottom-sum-item{
 		width: 100%;
