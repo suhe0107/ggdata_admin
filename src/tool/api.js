@@ -3,7 +3,7 @@ import tool from './tool.js';
 import store from './store.js';
 
 const instance = axios.create({
-	baseURL: store.state.base_url, // 接口基础路径
+	baseURL: 'https://api.suhejishi.com/api/GG', // 接口基础路径
 	timeout: 10000 // 超时时间（毫秒）
 })
 
