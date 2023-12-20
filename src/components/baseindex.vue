@@ -2,7 +2,21 @@
 	<div>
 		<universalskeletonscreen v-if="showuniversalskeletonscreen"></universalskeletonscreen>
 		<div class="content-bottom-sum" :style="isMobile?'':'padding: 2rem;padding-top: 1rem;'" v-else>
-			<div v-if="!isMobile" style="display: flex;flex-direction: row;align-items: center;">
+			<div style="width: 100%;display: flex;flex-direction: column;" v-if="isMobile">
+				<div style="display: flex;flex-direction: column;">
+					<div style="font-size: 0.8rem;margin-bottom: 0.5rem;">
+						选择时间段：
+					</div>
+					<el-date-picker v-model="value2" type="datetimerange" :picker-options="pickerOptions" range-separator="至"
+						start-placeholder="开始日期" end-placeholder="结束日期" align="right" @change="changetime" value-format="timestamp">
+					</el-date-picker>
+				</div>
+				
+				<div style="font-size: 0.8rem;margin-top: 0.5rem;">
+					数据时间段：{{showtimename}}
+				</div>
+			</div>
+			<div style="width: 100%;display: flex;flex-direction: row;align-items: center;flex-wrap: wrap;" v-else>
 				<div style="display: flex;flex-direction: row;align-items: center;font-size: 1rem;">
 					选择时间段：
 					<el-date-picker v-model="value2" type="datetimerange" :picker-options="pickerOptions" range-separator="至"
@@ -41,6 +55,17 @@
 							<div class="content-bottom-sum-item-bottom-item-name"
 								style="font-size: 0.8rem;margin-top: 0.5rem;" v-else>
 								{{items.name}}
+							</div>
+							<div class="content-bottom-sum-item-bottom-item-title" v-if="starttime" :style="isMobile?'font-size: 0.5rem;top: 0.3rem;left: 0.3rem;':''">
+								<div class="content-bottom-sum-item-bottom-item-title-info" v-if="items.sum_type==1">
+									求和
+								</div>
+								<div class="content-bottom-sum-item-bottom-item-title-info" v-if="items.sum_type==2" style="background-color: #ff0000;">
+									平均
+								</div>
+								<div class="content-bottom-sum-item-bottom-item-title-info" v-if="items.sum_type==3" style="background-color: #0055ff;">
+									最新
+								</div>
 							</div>
 						</div>
 					</div>
@@ -171,7 +196,7 @@
 		background-color: #F9F9F9;
 		margin-top: 0.7rem;
 		border-radius: 0.8rem;
-		padding: 0.7rem 0;
+		padding: 1rem 0;
 		min-height: 30vh;
 	}
 
@@ -214,18 +239,30 @@
 	}
 
 	.content-bottom-sum-item-bottom-item {
-		width: 95%;
+		width: 90%;
 		background-color: #FFFFFF;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
 		border-radius: 0.5rem;
-		padding: 1rem 0rem;
+		padding: 1.2rem 0rem;
 		font-size: 0.8rem;
-		margin-top: 1rem;
+		margin-top: 0.7rem;
+		position: relative;
 	}
-
+	.content-bottom-sum-item-bottom-item-title{
+		position: absolute;
+		top: 0.5rem;
+		font-size: 0.7rem;
+		left: 0.7rem;
+	}
+	.content-bottom-sum-item-bottom-item-title-info{
+		background-color: black;
+		color: #FFFFFF;
+		padding: 0.2rem 0.5rem;
+		border-radius: 0.2rem;
+	}
 	.content-bottom-sum-item-bottom-item-name {
 		font-size: 0.5rem;
 		color: gray;
