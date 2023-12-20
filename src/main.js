@@ -12,9 +12,6 @@ Vue.use(VueClipBoard)
 import store from './tool/store.js';
 import aes from '@/components/common/aes.js';
 
-import VueUeditorWrap from 'vue-ueditor-wrap';
-Vue.use(VueUeditorWrap);
-
 Vue.prototype.$scrollTo = (x = 0, y = 0, type = 'instant') => {
     window.scrollTo({
         top: x,

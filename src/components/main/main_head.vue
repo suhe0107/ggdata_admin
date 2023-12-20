@@ -1,7 +1,7 @@
 <template>
 	<div class="main_head">
 		<div class="main_head-left">
-			<div class="main_head-left-cop">
+			<div class="main_head-left-cop" @click="toindex">
 				<img src="../../assets/logo.png" class="main_head-left-cop-pic" />
 				<div class="main_head-left-cop-name">
 					咕鸽体育运营数据平台
@@ -49,7 +49,12 @@
 			that.userinfo = this.$tool.GetUserInfo()
 		},
 		methods: {
-
+			toindex(){
+				var that = this
+				if(this.routepath!=='/'){
+					that.$router.push('/')
+				}
+			}
 		}
 	}
 </script>
@@ -70,6 +75,7 @@
 		display: flex;
 		flex-direction: row;
 		align-items: center;
+		cursor: pointer;
 	}
 
 	.main_head-left-cop-name {

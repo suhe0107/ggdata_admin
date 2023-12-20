@@ -97,6 +97,30 @@ const ShowPhoneWeb = () => {
 	document.head.appendChild(meta);
 }
 
+const get_todaytime = (time='') => { //获取当天时间格式
+	if(time==''){
+		var date = new Date()
+	}else{
+		var date = new Date(time*1000)
+	}
+	let year = date.getFullYear();
+	let month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+	let day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+	let hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+	let minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+	let seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+	var time = {
+		year:Number(year),
+		month: Number(month),
+		day:Number(day),
+		hours:Number(hours),
+		minutes:Number(minutes),
+		seconds:Number(seconds),
+		all:year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds
+	}
+	return time;
+}
+
 export default {
 	tips,
 	tonewpages,
@@ -107,5 +131,6 @@ export default {
 	toaes,
 	isMobile,
 	ShowPhoneWeb,
-	login_out
+	login_out,
+	get_todaytime
 };

@@ -18,9 +18,22 @@
 				<div class="swiper-bottom-bottom-top">
 					<el-table :data="info" stripe style="width: 100%;overflow-y: scroll;">
 						<el-table-column prop="id" label="ID" width="100"></el-table-column>
-						<el-table-column prop="classification_name" label="分类"></el-table-column>
-						<el-table-column prop="name" label="名称"></el-table-column>
+						<el-table-column prop="classification_name" label="分类" width="150"></el-table-column>
+						<el-table-column prop="name" label="名称" width="200"></el-table-column>
 						<el-table-column prop="tips" label="说明"></el-table-column>
+						<el-table-column label="汇总类型" width="100">
+							<template slot-scope="scope">
+								<div v-if="scope.row.sum_type==1">
+									求和
+								</div>
+								<div v-if="scope.row.sum_type==2" style="color: red;">
+									平均
+								</div>
+								<div v-if="scope.row.sum_type==3" style="color: blue;">
+									最近值
+								</div>
+							</template>
+						</el-table-column>
 						<el-table-column prop="state_name" label="状态" width="100"></el-table-column>
 						<el-table-column prop="create_time" label="创建时间"></el-table-column>
 						<el-table-column label="操作" width="180">
@@ -48,7 +61,7 @@
 				<div class="content-special_show-top">
 					<div class="content-special_show-top-line">
 						<div class="content-special_show-top-line-name">
-							分类
+							分类选项
 						</div>
 						<el-select v-model="Classification_id" placeholder="请选择运营指标" style="width: 250px;">
 							<el-option v-for="item in ClassificationData" :key="item.id" :label="item.name"
@@ -58,17 +71,27 @@
 					</div>
 					<div class="content-special_show-top-line">
 						<div class="content-special_show-top-line-name">
-							名称
+							指标名称
 						</div>
 						<el-input v-model="name" placeholder="请输入名称"
 							class="content-special_show-top-line-right"></el-input>
 					</div>
 					<div class="content-special_show-top-line">
 						<div class="content-special_show-top-line-name">
-							提示
+							指标提示
 						</div>
 						<el-input v-model="tips" placeholder="请输入提示"
 							class="content-special_show-top-line-right"></el-input>
+					</div>
+					<div class="content-special_show-top-line">
+						<div class="content-special_show-top-line-name">
+							汇总类型
+						</div>
+						<el-select v-model="AllTypeData_id" placeholder="请选择汇总类型" style="width: 250px;">
+							<el-option v-for="item in AllTypeData" :key="item.id" :label="item.name"
+								:value="item.id">
+							</el-option>
+						</el-select>
 					</div>
 				</div>
 				<div class="content-popup-button">
@@ -94,6 +117,12 @@
 				info: [],
 				ClassificationName: '',
 				ClassificationData: [],
+				AllTypeData:[
+					{id:1,name:'求和'},
+					{id:2,name:'平均'},
+					{id:3,name:'最近值'}
+				],
+				AllTypeData_id:'',
 				page: 1,
 				total: 0,
 				edit_aim: false,
@@ -121,6 +150,7 @@
 			getdata(){
 				var that = this
 				that.Classification_id = that.aimitem.classification_id
+				that.AllTypeData_id = that.aimitem.sum_type
 				that.name =that.aimitem.name
 				that.tips = that.aimitem.tips
 			},
@@ -221,12 +251,22 @@
 					});
 					return
 				}
+				if (that.AllTypeData_id == '') {
+					this.$notify({
+						title: '缺少参数',
+						message: '请选择汇总类型',
+						position: 'bottom-right',
+						type: 'error'
+					});
+					return
+				}
 				that.$api.post('/GGAddClassification', {
 					optype:1,
 					id:that.aimitem.id,
 					name: that.name,
 					tips: that.tips,
-					classification_id: that.Classification_id
+					classification_id: that.Classification_id,
+					AllTypeData_id:that.AllTypeData_id
 				}).then(res => {
 					if (res.code == 200) {
 						that.$notify({
@@ -250,6 +290,7 @@
 				that.tips = ''
 				that.Classification_id = ''
 				that.aimitem = ''
+				that.AllTypeData_id = ''
 			},
 			getswiperdata() {
 				var that = this
@@ -348,12 +389,12 @@
 	}
 
 	.content-special_show-top-line-name {
-		width: 80px;
+		width: 100px;
 		text-align: center;
 	}
 
 	.content-special_show-top-line-right {
-		width: calc(100% - 80px - 1rem);
+		width: calc(100% - 100px - 1rem);
 	}
 
 	.content-popup-button {

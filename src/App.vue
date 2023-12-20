@@ -14,11 +14,23 @@
 		},
 		watch: {
 			$route() {
-				
+				this.initroute()
 			},
 		},
+		created() {
+			this.initroute()
+		},
 		methods: {
-
+			initroute() {
+				var that = this
+				var isMobile = that.$tool.isMobile()
+				if(isMobile) {
+					let meta = document.createElement("meta");
+					meta.name = "viewport";
+					meta.content = "initial-scale=1"
+					document.head.appendChild(meta);
+				}
+			}
 		}
 	}
 </script>
@@ -40,7 +52,6 @@
 		margin: 0;
 		display: flex;
 		flex-direction: column;
-		/* user-select: none; */
 		overflow-x: hidden;
 	}
 
