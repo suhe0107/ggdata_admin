@@ -6,6 +6,7 @@ import login from './../components/login.vue';
 import index from './../components/index.vue';
 
 import setting from './../components/setting/setting.vue';
+import work_list from './../components/work/work_list.vue';
 
 import tool from './tool.js';
 import store from './store.js';
@@ -24,6 +25,11 @@ const routes = [
 				path: '/setting',
 				name: '设置',
 				component: setting
+			},
+			{
+				path: '/work_list',
+				name: '我的待办',
+				component: work_list
 			}
 		]
 	},

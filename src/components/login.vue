@@ -81,6 +81,7 @@
 					username:that.username,
 					password:password
 				}).then(res => {
+					console.log(res)
 					if(res.code==404){
 						this.$notify({
 							title: '登录失败',

@@ -11,16 +11,6 @@ const instance = axios.create({
 instance.interceptors.request.use(function(config) {
 	console.log(config)
 	var userinfo = tool.GetUserInfo()
-	if(config['method']=="post" && userinfo){
-		config['headers']['token'] = userinfo.token
-	}
-	if(!config['data']){
-		config['data'] = {}
-	}
-	if(userinfo){
-		config['data']['user_id'] = userinfo.id
-	}
-	
 	return config
 }, function(error) {
 	return Promise.reject(error)

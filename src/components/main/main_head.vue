@@ -9,6 +9,9 @@
 			</div>
 		</div>
 		<div class="main_head-right">
+			<div class="main_head-right-name" @click="$router.push('/work_list')">
+				我的待办
+			</div>
 			<div class="main_head-right-name" @click="$router.push('/setting')">
 				设置
 			</div>
@@ -68,7 +71,7 @@
 		justify-content: space-between;
 		align-items: center;
 		padding: 0 2rem;
-		background: rgba(0, 0, 0, 0.1);
+		background: rgba(0, 0, 0, 0.05);
 	}
 
 	.main_head-left-cop {
