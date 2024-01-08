@@ -177,7 +177,7 @@
 				detail_show: false,
 				edit_aim: false,
 				page: 1,
-				perPage: 15,
+				perPage: 10,
 				total: 0,
 				keyword:'',
 
