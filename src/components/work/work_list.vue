@@ -375,51 +375,49 @@
 				var that = this
 				that.aimdetail = e
 				
-				that.check_can_op_user_id().then(res => {
-					if (!res) {
-						this.$notify({
-							title: '无法取消',
-							message: '上级指派的任务您无法取消',
-							position: 'bottom-right',
-							type: 'error'
-						});
-						return
-					}
-					this.$confirm('确定要取消此任务吗？认真工作，谨慎操作', '取消任务', {
-						confirmButtonText: '确定',
-						cancelButtonText: '取消',
-						type: 'warning'
-					}).then(() => {
-						var data = {
-							optype: 5,
-							id: that.aimdetail.id,
-						}
-						that.$api.post('/OpWorkInfo', data).then(res => {
-							if (res.code == 200) {
-								that.$notify({
-									title: '成功',
-									message: '操作成功',
-									type: 'success'
-								});
-								that.initdata()
-				
-								that.page = 1
-								that.getdata()
-							} else {
-								this.$notify({
-									title: '操作错误',
-									message: res.msg,
-									position: 'bottom-right',
-									type: 'error'
-								});
-							}
-						}).catch(error => {
-							console.error(error)
-						})
-					}).catch(() => {
-				
+				if (that.aimdetail.generate_by_user_id !== that.aim_user_id) {
+					this.$notify({
+						title: '无法取消',
+						message: '上级指派的任务您无法取消',
+						position: 'bottom-right',
+						type: 'error'
 					});
-				})
+					return
+				}
+				this.$confirm('确定要取消此任务吗？认真工作，谨慎操作', '取消任务', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					var data = {
+						optype: 5,
+						id: that.aimdetail.id,
+					}
+					that.$api.post('/OpWorkInfo', data).then(res => {
+						if (res.code == 200) {
+							that.$notify({
+								title: '成功',
+								message: '操作成功',
+								type: 'success'
+							});
+							that.initdata()
+								
+							that.page = 1
+							that.getdata()
+						} else {
+							this.$notify({
+								title: '操作错误',
+								message: res.msg,
+								position: 'bottom-right',
+								type: 'error'
+							});
+						}
+					}).catch(error => {
+						console.error(error)
+					})
+				}).catch(() => {
+								
+				});
 			},
 			okwork(e) {
 				var that = this
